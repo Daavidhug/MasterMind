@@ -34,6 +34,17 @@ public class AppointmentController {
                     .body("El paciente " + dto.getPatientId() + " no existe.");
         }
 
+        //VALIDACION DE HORARIOS OCUPADOS
+        boolean isOverlapping = appointmentRepository.existsOverlappingAppointment(
+                dto.getStartTime(),
+                dto.getEndTime(),
+                null);
+
+        if (isOverlapping){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("El Horario seleccionado ya se encuentra ocupado por otro");
+        }
+
         Appointment appointment = new Appointment();
         appointment.setPatient(patientOptional.get());
         appointment.setStartTime(dto.getStartTime());
@@ -66,6 +77,16 @@ public class AppointmentController {
         if (patientOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("El paciente con ID " + dto.getPatientId() + " no existe.");
+        }
+
+        boolean isOverlapping = appointmentRepository.existsOverlappingAppointment(
+                dto.getStartTime(),
+                dto.getEndTime(),
+                null);
+
+        if (isOverlapping){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("El Horario Seleccionado ya se encuentra Ocupado por otro");
         }
 
         Appointment appointment = appointmentOptional.get();
