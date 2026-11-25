@@ -14,6 +14,8 @@ public class Patient {
 
     private String firstName;
     private String lastName;
+
+    @Column(unique = true, nullable = false)
     private String dni;
     private String phone;
 
